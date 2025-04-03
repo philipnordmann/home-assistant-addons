@@ -2,65 +2,57 @@
 
 profile mohlenhoff_alpha2 flags=(attach_disconnected,mediate_deleted) {
   #include <abstractions/base>
-  
-  # Allow network access
-  network inet tcp,
-  network inet udp,
-  
-  # Files required for the add-on to function
+
+  # Capabilities
+  file,
+  signal (send) set=(kill,term,int,hup,cont),
+
+  # S6-Overlay
+  /init ix,
   /bin/** ix,
   /usr/bin/** ix,
-  /usr/local/bin/** ix,
-  /usr/lib/** mr,
-  /lib/** mr,
-  
-  # Python
-  /usr/bin/python3 ix,
-  /usr/lib/python3* mr,
-  /usr/lib/python3*/** mr,
-  
-  # Home Assistant API access
-  /usr/bin/curl ix,
-  /usr/bin/wget ix,
-  
-  # Add-on directory access
-  /data/** rw,
-  /data/ rw,
-  /share/** r,
-  
-  # Allow reading configuration
-  /etc/hosts r,
-  /etc/resolv.conf r,
-  /etc/ssl/** r,
-  
-  # Allow script execution
-  /usr/bin/alpha2_client.py r,
-  /usr/bin/alpha2_integration.py r,
-  /usr/bin/alpha2_client.py rix,
-  /usr/bin/alpha2_integration.py rix,
-  
-  # Allow log writes
-  /dev/stdout w,
-  /dev/stderr w,
-  /proc/*/fd/ r,
-  /proc/*/fd/* r,
-  
-  # Capabilities
-  capability net_bind_service,
-  capability net_admin,
-  
-  # S6-Overlay & System
-  /init ix,
-  /bin/s6** ix,
-  /bin/su ix,
-  /bin/echo ix,
+  /run/{s6,s6-rc*,service}/** ix,
+  /package/** ix,
+  /command/** ix,
   /etc/services.d/** rwix,
-  /run/** rwk,
+  /etc/cont-init.d/** rwix,
+  /etc/cont-finish.d/** rwix,
+  /run/{,**} rwk,
   /dev/tty rw,
-  
-  # Self files
-  /app/** r,
-  /etc/** r,
-  /etc/passwd r,
-  /etc/group r,
+
+  # Bashio
+  /usr/lib/bashio/** ix,
+  /tmp/** rwk,
+
+  # Access to options.json and other files within your addon
+  /data/** rw,
+
+  # Start new profile for service
+  /usr/bin/alpha2_integration.py cx -> alpha2,
+
+  profile alpha2 flags=(attach_disconnected,mediate_deleted) {
+    #include <abstractions/base>
+    #include <abstractions/python>
+
+    # Receive signals from parent
+    signal (receive) peer=mohlenhoff_alpha2,
+
+    # Application file access
+    /usr/bin/alpha2_integration.py rix,
+    /usr/bin/alpha2_client.py r,
+    
+    # Libraries and modules
+    /usr/lib/python3* r,
+    /usr/local/lib/python3* r,
+    /usr/local/lib/python3*/dist-packages/** r,
+    /usr/lib/python3*/dist-packages/** r,
+    
+    # Network access
+    network inet stream,
+    network inet6 stream,
+    
+    # Common system libraries
+    /usr/lib/x86_64-linux-gnu/** rm,
+    /usr/lib/@{multiarch}/lib*.so* rm,
+  }
 }
