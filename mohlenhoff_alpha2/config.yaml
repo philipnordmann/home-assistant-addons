@@ -1,6 +1,6 @@
 name: "Möhlenhoff Alpha 2 Add-On"
 description: "Integrate Möhlenhoff Alpha 2 with virtual rooms and any Home Assistant temperature sensor"
-version: "0.0.7"
+version: "v0.0.7"
 slug: "mohlenhoff_alpha2"
 init: false
 image: "ghcr.io/philipnordmann/mohlenhoff_alpha2"
