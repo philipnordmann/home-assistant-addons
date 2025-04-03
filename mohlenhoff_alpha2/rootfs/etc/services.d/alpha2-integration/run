@@ -1,0 +1,13 @@
+#!/command/with-contenv bashio
+# ==============================================================================
+# Start Alpha 2 Integration service
+# ==============================================================================
+
+# Get config
+export ALPHA2_HOST=$(bashio::config 'alpha2_host')
+export UPDATE_INTERVAL=$(bashio::config 'update_interval')
+export SUPERVISOR_URL="http://supervisor/core"
+
+# Run the integration
+bashio::log.info "Starting Alpha 2 Integration..."
+python3 /usr/bin/alpha2_integration.py

@@ -1,0 +1,30 @@
+name: "Möhlenhoff Alpha 2 Add-On"
+description: "Integrate Möhlenhoff Alpha 2 with virtual rooms and any Home Assistant temperature sensor"
+version: "1.0.7"
+slug: "mohlenhoff_alpha2"
+init: false
+image: "ghcr.io/philipnordmann/mohlenhoff_alpha2"
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+options:
+  alpha2_host: "192.168.1.100"
+  update_interval: 60
+  virtual_devices:
+    - name: "Living Room"
+      area_id: 1
+      temperature_entity_id: "sensor.living_room_temperature"
+    - name: "Bedroom"
+      area_id: 1
+      temperature_entity_id: "sensor.bedroom_temperature"
+schema:
+  alpha2_host: str
+  update_interval: int(10,600)
+  virtual_devices:
+    - name: str
+      area_id: int(1,255)
+      temperature_entity_id: str
+homeassistant_api: true
