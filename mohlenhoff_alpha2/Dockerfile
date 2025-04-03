@@ -14,6 +14,9 @@ RUN apk add --no-cache \
 # Copy root filesystem
 COPY rootfs /
 
+RUN chmod +x /etc/services.d/alpha2-integration/*
+RUN chmod +x /usr/bin/alpha2_integration.py
+
 # Build arguments
 ARG BUILD_ARCH
 ARG BUILD_DATE
