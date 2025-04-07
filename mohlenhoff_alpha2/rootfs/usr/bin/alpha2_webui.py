@@ -15,9 +15,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger('alpha2-webui')
 
-app = Flask(__name__, 
-            static_folder='/usr/share/alpha2/static',
-            template_folder='/usr/share/alpha2/templates')
+app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
 
 ingress_path = os.environ.get('INGRESS_URI', '')
