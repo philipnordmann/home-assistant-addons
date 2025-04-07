@@ -3,6 +3,10 @@
 # Start Alpha 2 Web UI service
 # ==============================================================================
 
-# Run the web UI
-bashio::log.info "Starting Alpha 2 Web UI..."
-python3 /usr/bin/alpha2_webui.py
+# Set ingress port and URI as environment variables
+export INGRESS_PORT=$(bashio::addon.ingress_port)
+export INGRESS_URI=$(bashio::addon.ingress_entry)
+
+# Start the web UI
+bashio::log.info "Starting Alpha 2 Web UI on port ${INGRESS_PORT} with URI ${INGRESS_URI}..."
+exec python3 /usr/bin/alpha2_webui.py

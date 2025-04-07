@@ -5,6 +5,8 @@ import logging
 import requests
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from alpha2_client import Alpha2Client
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 
 # Configure logging
 logging.basicConfig(
@@ -16,6 +18,10 @@ logger = logging.getLogger('alpha2-webui')
 app = Flask(__name__, 
             static_folder='/usr/share/alpha2/static',
             template_folder='/usr/share/alpha2/templates')
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
+
+ingress_path = os.environ.get('INGRESS_URI', '')
+app.config['APPLICATION_ROOT'] = ingress_path
 
 def load_config():
     """Load configuration from options.json"""
@@ -96,7 +102,7 @@ def get_ha_sensors():
         logger.error(f"Error getting entities: {e}")
         return []
 
-@app.route('/')
+@app.route(f'{ingress_path}/')
 def index():
     """Main dashboard page"""
     config = load_config()
@@ -104,7 +110,7 @@ def index():
                           config=config,
                           virtual_devices=config['virtual_devices'])
 
-@app.route('/rooms')
+@app.route(f'{ingress_path}/rooms')
 def rooms():
     """Manage virtual rooms page"""
     config = load_config()
@@ -122,13 +128,13 @@ def rooms():
                           temp_sensors=temp_sensors,
                           alpha2_devices=alpha2_devices)
 
-@app.route('/api/rooms', methods=['GET'])
+@app.route(f'{ingress_path}/api/rooms', methods=['GET'])
 def get_rooms():
     """API endpoint to get all virtual rooms"""
     config = load_config()
     return jsonify(config['virtual_devices'])
 
-@app.route('/api/rooms/add', methods=['POST'])
+@app.route(f'{ingress_path}/api/rooms/add', methods=['POST'])
 def add_room():
     """API endpoint to add a new virtual room"""
     config = load_config()
@@ -169,7 +175,7 @@ def add_room():
         save_config(config)
         return jsonify({'success': False, 'message': 'Failed to create room in Alpha 2'}), 500
 
-@app.route('/api/rooms/delete/<int:area_id>', methods=['POST'])
+@app.route(f'{ingress_path}/api/rooms/delete/<int:area_id>', methods=['POST'])
 def delete_room(area_id):
     """API endpoint to delete a virtual room"""
     config = load_config()
@@ -187,7 +193,7 @@ def delete_room(area_id):
     
     return jsonify({'success': False, 'message': 'Room not found'}), 404
 
-@app.route('/api/sensors', methods=['GET'])
+@app.route(f'{ingress_path}/api/sensors', methods=['GET'])
 def get_sensors():
     """API endpoint to get all temperature sensors"""
     sensors = get_ha_sensors()
