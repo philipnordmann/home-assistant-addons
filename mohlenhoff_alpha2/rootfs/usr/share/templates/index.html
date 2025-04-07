@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard">
+    <h2>System Status</h2>
+    
+    <div class="status-card">
+        <h3>Alpha 2 Connection</h3>
+        <p>Host: {{ config.alpha2_host }}</p>
+        <p>Update Interval: {{ config.update_interval }} seconds</p>
+    </div>
+    
+    <h2>Virtual Rooms</h2>
+    
+    {% if virtual_devices %}
+        <div class="rooms-grid">
+            {% for device in virtual_devices %}
+            <div class="room-card">
+                <h3>{{ device.name }}</h3>
+                <p>Area ID: {{ device.area_id }}</p>
+                <p>Temperature Sensor: {{ device.temperature_entity_id }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No virtual rooms configured. <a href="{{ url_for('rooms') }}">Add one now</a>.</p>
+    {% endif %}
+</section>
+{% endblock %}
