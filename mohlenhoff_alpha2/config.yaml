@@ -1,6 +1,6 @@
 name: "Möhlenhoff Alpha 2 Add-On"
 description: "Integrate Möhlenhoff Alpha 2 with virtual rooms and any Home Assistant temperature sensor"
-version: "0.1.0"
+version: "0.0.8"
 slug: "mohlenhoff_alpha2"
 init: false
 image: "ghcr.io/philipnordmann/mohlenhoff_alpha2"
@@ -28,6 +28,3 @@ schema:
       area_id: int(1,255)
       temperature_entity_id: str
 homeassistant_api: true
-ingress: true
-ingress_port: 8099
-panel_icon: mdi:heat-wave
