@@ -10,4 +10,5 @@ export SUPERVISOR_URL="http://supervisor/core"
 
 # Run the integration
 bashio::log.info "Starting Alpha 2 Integration..."
+cd /usr/share/
 python3 /usr/bin/alpha2_integration.py
