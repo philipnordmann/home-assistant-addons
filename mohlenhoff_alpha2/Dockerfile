@@ -13,7 +13,7 @@ RUN apk add --no-cache \
     py3-flask
 
 # Install Python packages
-RUN pip3 install \
+RUN pip3 install --break-system-packages \
     flask-restful \
     wtforms
 
