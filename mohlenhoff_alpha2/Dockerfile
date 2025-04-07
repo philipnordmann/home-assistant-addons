@@ -9,7 +9,13 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apk add --no-cache \
     python3 \
     py3-pip \
-    py3-requests
+    py3-requests \
+    py3-flask
+
+# Install Python packages
+RUN pip3 install \
+    flask-restful \
+    wtforms
 
 # Copy root filesystem
 COPY rootfs /
